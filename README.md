@@ -2,7 +2,7 @@
 天眼查数据抓取
 >利用 phantomjs抓取动态js渲染的网页
 
-1、进入命令行工具
+1、进入命令行工具 运行命令 node init.js  置空相关txt文件
 2、运行命令 node changeOriginData.js
    将xlsx内容转换成txt格式--(因为phantomjs不支持读写xlsx)。由此获得公司名称数组，数据存储在originCompanyData.txt
 3、运行命令 phantomjs getLinks.js
