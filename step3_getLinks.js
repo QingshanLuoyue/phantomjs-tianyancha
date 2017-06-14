@@ -4,6 +4,7 @@ var fs = require('fs');
 // 获取原始公司名字数组列表
 var companyList = [];
 var originXlsxData = [];
+var filePath = './tempdata/companyLinks.txt'
 var ins = fs.open('./tempdata/originCompanyData.txt', {
     mode: 'r',
     charset: 'utf-8'
@@ -16,10 +17,25 @@ while (!ins.atEnd()) { //循环读取文件内容
 }
 // console.log(JSON.stringify(companyList))
 // 当前搜索公司列表序号
-var searchCount = 0;
-var initialurl = encodeURI('http://www.tianyancha.com/search?key='+ companyList[searchCount] +'&checkFrom=searchBox');
+var searchCount = readFromTxt() ? readFromTxt() : 0;
+if (searchCount >= companyList.length) {
+    console.log('超链接数组已经全部写入' + filePath + '文件！接下来请执行phantomjs getDetails.js获取公司详细信息')
+    phantom.exit();
+}
+var initialurl = encodeURI('http://www.tianyancha.com/search?key='+ companyList[searchCount] +'&checkFrom=searchBox')
+// var initialurl = encodeURI('http://www.tianyancha.com/search?key=深圳腾讯&checkFrom=searchBox')
+// var initialurl = encodeURI('http://www.baidu.com')
 
-var filePath = './tempdata/companyLinks.txt';
+function readFromTxt() {
+    var readTxt = fs.open('./storage/historyLink.txt', 'r');
+    var buffer = readTxt.readLine(); //一行行的读取
+    if (buffer) {
+        return buffer;
+    } else {
+        return '';
+    }
+}
+
 
 var page = require('webpage').create();
 var USER_AGENTS = [
@@ -59,7 +75,7 @@ var USER_AGENTS = [
     "Mozilla/5.0 (X11; U; Linux x86_64; zh-CN; rv:1.9.2.10) Gecko/20100922 Ubuntu/10.10 (maverick) Firefox/3.6.10"
 ];
 
-
+// console.log(initialurl)
 // 一开始就获取失败的重试变量
 var failTryCount = 1;
 var failTryMaxNum = 3;
@@ -76,7 +92,7 @@ function startSearch(initialurl) {
     page.open(initialurl, function(status) {
         //Page is loaded!
         console.log('搜索url = ', initialurl);
-        console.log('搜索词语 = ', companyList[searchCount]);
+        // console.log('搜索词语 = ', companyList[searchCount]);
         if (status !== 'success') {
             if (failTryCount <= failTryMaxNum) {
                 console.log('获取失败，第'+ failTryCount +'次重试···');
@@ -117,7 +133,7 @@ function startSearch(initialurl) {
                     } else {
                         if (reTryCount <= reTryMaxNum) {
                             console.log('没有搜索到结果，可能是获取速度过快，js还未执行，第'+ reTryCount +'次重试···');
-                            console.log('initialurl = ',initialurl)
+                            // console.log('initialurl = ',initialurl)
                             startSearch(initialurl);
                             reTryCount++;
                         } else {
@@ -170,5 +186,10 @@ function writeToTxt(html) {
         str += html.link + '\n';
     }
     fs.write(filePath, str, 'a');
+    writeHistoryLink(searchCount + 1)
     reSearch();
+}
+
+function writeHistoryLink(num) {
+    fs.write('./storage/historyLink.txt', num, 'w');
 }

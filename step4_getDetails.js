@@ -7,6 +7,7 @@ var diffAreaArr = ['北京','上海','深圳','广州','重庆','成都','杭州
 // 获取原始公司名字数组列表
 var linksArr = [];
 var originXlsxData = [];
+var filePath = './tempdata/companyDetails.txt'
 var ins = fs.open('./tempdata/companyLinks.txt', {
     mode: 'r',
     charset: 'utf-8'
@@ -20,10 +21,26 @@ while (!ins.atEnd()) { //循环读取文件内容
 // console.log(JSON.stringify(linksArr))
 // console.log(JSON.stringify(originXlsxData))
 // 当前搜索公司列表序号
-var searchCount = 0;
-var initialurl = encodeURI(linksArr[searchCount])
+var searchCount = readFromTxt() ? readFromTxt() : 0;
+if (searchCount >= linksArr.length) {
+    console.log('所有公司详细信息已经全部写入' + filePath + '文件！接下来请执行node changeFinalDataToXlsx.js转换文本数据为xlsx数据！')
+    phantom.exit();
+}
+// var initialurl = encodeURI(linksArr[searchCount])
+// var initialurl = encodeURI('http://www.tianyancha.com/company/2804338793')
+var initialurl = encodeURI('http://www.tinayancha.com')
 
-var filePath = './tempdata/companyDetails.txt'
+function readFromTxt() {
+    var readTxt = fs.open('./storage/historyDetails.txt', 'r');
+    var buffer = readTxt.readLine(); //一行行的读取
+    if (buffer) {
+        return buffer;
+    } else {
+        return '';
+    }
+}
+
+
 // var filePath = './companyDetails.html'
 
 var page = require('webpage').create();
@@ -79,7 +96,7 @@ function startSearch(initialurl) {
     var n = Math.floor(Math.random() * USER_AGENTS.length + 1) - 1;
     //page.settings.userAgent= 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36';
     page.settings.userAgent = USER_AGENTS[n];
-
+    console.log(initialurl)
     page.open(initialurl, function(status) {
         //Page is loaded!
         console.log('搜索url = ', initialurl);
@@ -207,5 +224,11 @@ function writeToTxt(html) {
     }
     // console.log(str)
     fs.write(filePath, str, 'a');
+    writeHistoryLink(searchCount + 1)
     reSearch();
+}
+
+
+function writeHistoryDetails(num) {
+    fs.write('./storage/historyDetails.txt', num, 'w');
 }
