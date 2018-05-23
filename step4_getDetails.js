@@ -21,14 +21,15 @@ while (!ins.atEnd()) { //循环读取文件内容
 // console.log(JSON.stringify(linksArr))
 // console.log(JSON.stringify(originXlsxData))
 // 当前搜索公司列表序号
-var searchCount = readFromTxt() ? readFromTxt() : 0;
+var searchCount = readFromTxt() ? parseInt(readFromTxt()) : 0;
 if (searchCount >= linksArr.length) {
-    console.log('所有公司详细信息已经全部写入' + filePath + '文件！接下来请执行node changeFinalDataToXlsx.js转换文本数据为xlsx数据！')
+    console.log('所有公司详细信息已经全部写入' + filePath + '文件！接下来请执行node step5_changeFinalDataToXlsx.js转换文本数据为xlsx数据！')
     phantom.exit();
 }
-// var initialurl = encodeURI(linksArr[searchCount])
+
+var initialurl = encodeURI(linksArr[searchCount])
 // var initialurl = encodeURI('http://www.tianyancha.com/company/2804338793')
-var initialurl = encodeURI('http://www.tinayancha.com')
+// var initialurl = encodeURI('http://www.tinayancha.com')
 
 function readFromTxt() {
     var readTxt = fs.open('./storage/historyDetails.txt', 'r');
@@ -39,9 +40,6 @@ function readFromTxt() {
         return '';
     }
 }
-
-
-// var filePath = './companyDetails.html'
 
 var page = require('webpage').create();
 var USER_AGENTS = [
@@ -203,7 +201,7 @@ function reSearch() {
     failTryCount = 1;
     reTryCount = 1;
     if (searchCount >= linksArr.length) {
-        console.log('所有公司详细信息已经全部写入' + filePath + '文件！接下来请执行node changeFinalDataToXlsx.js转换文本数据为xlsx数据！')
+        console.log('所有公司详细信息已经全部写入' + filePath + '文件！接下来请执行node step5_changeFinalDataToXlsx.js转换文本数据为xlsx数据！')
         phantom.exit();
     }
     var link = changeSearchWord(searchCount);
@@ -217,14 +215,13 @@ function writeToTxt(html) {
     for (var i = 0; i < curData.length - 1; i++) {
         str += curData[i] + ',';
     }
-    if (searchCount >= linksArr.length) {
+    if (searchCount >= (linksArr.length - 1)) {
         str += html.name + ',' + html.tel + ',' + html.email + ',' + html.website + ',' + html.address + ',' + html.diffArea;
     } else {
         str += html.name + ',' + html.tel + ',' + html.email + ',' + html.website + ',' + html.address + ',' + html.diffArea + '\n';
     }
-    // console.log(str)
     fs.write(filePath, str, 'a');
-    writeHistoryLink(searchCount + 1)
+    writeHistoryDetails(searchCount + 1)
     reSearch();
 }
 

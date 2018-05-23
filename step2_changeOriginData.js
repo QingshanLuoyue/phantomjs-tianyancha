@@ -14,8 +14,9 @@ function writeToTxt(msg) {
 
 var news_item = [];
 // var obj = xlsx.parse(__dirname + '/直播APP名单v1.xlsx');
-var obj = xlsx.parse('./origindata/直播APP名单v2.xlsx');
+// var obj = xlsx.parse('./origindata/直播APP名单v2.xlsx');
 // var obj = xlsx.parse(__dirname + '/视频交友APP名单v2.xlsx');
+var obj = xlsx.parse('./origindata/陪聊APP名单.xlsx');
 var excelObj = obj[0].data;
 // console.log(excelObj)
 if (excelObj) {

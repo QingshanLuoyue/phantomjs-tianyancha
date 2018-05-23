@@ -10,17 +10,22 @@
 
 ##result目录存储 最终生成的xlsx数据
 
+首先安装依赖文件
+进入命令行工具 进入文件根目录   运行命令 cnpm install
+等待安装完依赖文件之后执行以下命令
+
+
 1、进入命令行工具 运行命令 node step1_init.js  置空相关txt文件,以及storage目录中的缓存文件
 
 2、运行命令 node step2_changeOriginData.js
    将xlsx内容转换成txt格式--(因为phantomjs不支持读写xlsx)。由此获得公司名称数组，数据存储在./tempdata/originCompanyData.txt
 
-3、运行命令 phantomjs step3_getLinks.js
+3、运行命令 phantomjs step3_getLinks.js（有时候会出现无法获取数据，一直在等待状态，未知原因，等待较长时间才会有反应，估计是天眼查响应慢）
    通过公司名字，在天眼查上搜到与关键字相近的公司，取搜到结果的第一个公司的详情超链接
    遍历查询所有需要搜索的公司
    结果将得到一个超链接数组，数据存储在./tempdata/companyLinks.txt
 
-4、运行命令 phantomjs step4_getDetails.js
+4、运行命令 phantomjs step4_getDetails.js（有时候会出现无法获取数据，一直在等待状态，未知原因，等待较长时间才会有反应，估计是天眼查响应慢）
    遍历超链接数组，获取各个公司的电话／邮箱／名字／网址等
    此时数组还是一个文本存储方式，数据存储在./tempdata/companyDetails.txt
 

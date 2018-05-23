@@ -17,9 +17,9 @@ while (!ins.atEnd()) { //循环读取文件内容
 }
 // console.log(JSON.stringify(companyList))
 // 当前搜索公司列表序号
-var searchCount = readFromTxt() ? readFromTxt() : 0;
+var searchCount = readFromTxt() ? parseInt(readFromTxt()) : 0;
 if (searchCount >= companyList.length) {
-    console.log('超链接数组已经全部写入' + filePath + '文件！接下来请执行phantomjs getDetails.js获取公司详细信息')
+    console.log('超链接数组已经全部写入' + filePath + '文件！接下来请执行phantomjs step4_getDetails.js获取公司详细信息')
     phantom.exit();
 }
 var initialurl = encodeURI('http://www.tianyancha.com/search?key='+ companyList[searchCount] +'&checkFrom=searchBox')
@@ -165,7 +165,7 @@ function reSearch() {
     failTryCount = 1;
     reTryCount = 1;
     if (searchCount >= companyList.length) {
-        console.log('超链接数组已经全部写入' + filePath + '文件！接下来请执行phantomjs getDetails.js获取公司详细信息')
+        console.log('超链接数组已经全部写入' + filePath + '文件！接下来请执行phantomjs step4_getDetails.js获取公司详细信息')
         phantom.exit();
     }
     var link = changeSearchWord(searchCount);
@@ -180,7 +180,7 @@ function writeToTxt(html) {
     for (var i = 0; i < curData.length; i++) {
         str += curData[i] + ',';
     }
-    if (searchCount >= companyList.length) {
+    if (searchCount >= (companyList.length - 1)) {
         str += html.link;
     } else {
         str += html.link + '\n';

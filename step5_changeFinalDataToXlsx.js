@@ -6,7 +6,7 @@ var companyMsgArr = [];
 var finalMsgArr = [];
 
 function readFromTxt() {
-	var readTxt = fs.readFileSync('companyDetails.txt', 'utf-8');
+	var readTxt = fs.readFileSync('./tempdata/companyDetails.txt', 'utf-8');
 	companyMsgArr = (readTxt.toString().split('\n'));
 	for (var i = 0; i < companyMsgArr.length; i++) {
 		finalMsgArr.push(companyMsgArr[i].split(','))
